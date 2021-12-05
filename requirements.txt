@@ -1,3 +1,10 @@
 Django>=3.0,<4.0
 psycopg2>=2.8
 sqlalchemy>=1.4.27
+django-sql-explorer
+celery
+pymongo
+pika
+grpcio
+protobuf
+grpcio-tools

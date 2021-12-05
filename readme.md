@@ -72,3 +72,13 @@ docker-compose up
 # specify db up
 docker-compose up db
 ```
+
+## Postgres Readonly User
+```sql
+CREATE USER readonly WITH PASSWORD 'readonly';
+GRANT SELECT ON public.user TO readonly;
+
+```
+
+## Init sql
+python3 model/user.py > config/init.sql 

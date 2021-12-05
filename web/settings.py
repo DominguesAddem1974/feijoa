@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'explorer',
 ]
 
 MIDDLEWARE = [
@@ -80,6 +81,14 @@ DATABASES = {
         'NAME': os.environ.get('POSTGRES_NAME'),
         'USER': os.environ.get('POSTGRES_USER'),
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        'HOST': 'db',
+        'PORT': 5432,
+    },
+    'readonly': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('POSTGRES_NAME'),
+        'USER': 'readonly',
+        'PASSWORD': 'readonly',
         'HOST': 'db',
         'PORT': 5432,
     }
@@ -128,3 +137,6 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EXPLORER_CONNECTIONS = { 'Default': 'readonly' }
+EXPLORER_DEFAULT_CONNECTION = 'readonly'

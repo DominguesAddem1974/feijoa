@@ -4,7 +4,8 @@ services:
   db:
     image: postgres
     volumes:
-      - ./data/db:/var/lib/postgresql/data
+      - ./data/postgres:/var/lib/postgresql/data
+      - ./config/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - 127.0.0.1:5432:5432
     environment:
@@ -14,7 +15,9 @@ services:
     networks:
       - djangonetwork
   web:
-    build: .
+    build:
+       context: .
+       dockerfile: Dockerfile.web
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/code
@@ -30,6 +33,42 @@ services:
       - db:db
     networks:
       - djangonetwork
+
+  broker:
+    image:  rabbitmq:3.7.3-management
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbitmq
+      RABBITMQ_DEFAULT_PASS: rabbitmq
+      RABBITMQ_DEFAULT_VHOST: vhost
+    ports:
+      - 127.0.0.1:15672:15672
+      - 127.0.0.1:5672:5672
+    networks:
+      - djangonetwork
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile.celery
+    command: bash -c "celery -A celery_app worker -l info"
+    restart: always
+    volumes:
+      - .:/code
+    depends_on:
+      - broker
+    links:
+      - broker:broker
+    networks:
+      - djangonetwork
+  mongo:
+    image: mongo
+    command: mongod --dbpath /data/db --port 27017 --config /resource/mongod.yml
+    ports:
+      - 127.0.0.1:27017:27017
+    volumes:
+      - ./data/mongo:/data/db
+      - ./config/mongod.yml:/resource/mongod.yml
+    networks:
+      - djangonetwork 
 networks:
   djangonetwork:
     driver: bridge

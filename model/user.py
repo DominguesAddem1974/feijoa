@@ -22,6 +22,7 @@ def dump_datetime(value):
         return None
     return [value.strftime("%Y-%m-%d"), value.strftime("%H:%M:%S")]
 
+
 class User(Base):
     __tablename__ = 'user'
 
@@ -36,16 +37,19 @@ class User(Base):
         self.time_stamp = time_stamp
 
     def as_dict(self):
-        user_dict = {c.name: getattr(self, c.name) for c in (self.__table__.columns)}
+        user_dict = {c.name: getattr(self, c.name)
+                     for c in (self.__table__.columns)}
         user_dict['time_stamp'] = self.time_stamp.timestamp()
 
         return user_dict
 
     @staticmethod
     def from_dict(obj: dict):
-        user_obj = User(**{k: v for k, v in obj.items() if k in {'name', 'email', 'time_stamp'}})
+        user_obj = User(**{k: v for k, v in obj.items()
+                        if k in {'name', 'email', 'time_stamp'}})
         #user_obj.time_stamp = datetime.datetime.fromtimestamp(user_obj.time_stamp)
-        user_obj.time_stamp = datetime.datetime.utcfromtimestamp(user_obj.time_stamp)
+        user_obj.time_stamp = datetime.datetime.utcfromtimestamp(
+            user_obj.time_stamp)
 
         return user_obj
 
@@ -66,11 +70,11 @@ if __name__ == '__main__':
     ]
     for s in init_sql:
         print(s)
-    print(time.time())
-    print(datetime.datetime.fromtimestamp(time.time()))
-    user = User(name='h', email='a')
-    user_dict = user.as_dict()
-    user_obj = User.from_dict(user_dict)
-    print(user_dict)
-    print(user_obj.__dict__)
-    print(user_obj.time_stamp)
+    # print(time.time())
+    # print(datetime.datetime.fromtimestamp(time.time()))
+    # user = User(name='h', email='a')
+    # user_dict = user.as_dict()
+    # user_obj = User.from_dict(user_dict)
+    # print(user_dict)
+    # print(user_obj.__dict__)
+    # print(user_obj.time_stamp)
